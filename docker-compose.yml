@@ -8,7 +8,7 @@ services:
       environment:
          - POSTGRES_PASSWORD=asdfasdf
       volumes:
-         - ./config/postgres:/var/lib/postgresql
+         - postgres-data:/var/lib/postgresql
 
    flaskbb:
       depends_on: 
@@ -21,3 +21,6 @@ services:
          - ./logs:/app/logs
       ports:
          - 5000:5000
+
+volumes:
+   postgres-data:
