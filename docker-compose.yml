@@ -1,0 +1,23 @@
+version: '3'
+services:
+   redis:
+      image: redis:alpine
+
+   postgres:
+      image: postgres:9.5-alpine
+      environment:
+         - POSTGRES_PASSWORD=asdfasdf
+      volumes:
+         - ./config/postgres:/var/lib/postgresql
+
+   flaskbb:
+      depends_on: 
+         - postgres
+      environment:
+         - FLASKBB_SETTINGS=/app/config/flaskbb.cfg
+      image: gordonjcp/flaskbb
+      volumes:
+         - ./config:/app/config
+         - ./logs:/app/logs
+      ports:
+         - 5000:5000
