@@ -18,6 +18,7 @@ services:
       image: gordonjcp/flaskbb
       volumes:
          - ./config:/app/config
+         - ./themes:/app/themes
          - ./logs:/app/logs
       ports:
          - 5000:5000

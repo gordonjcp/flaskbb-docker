@@ -32,6 +32,8 @@ RUN python3 -m pip install ./Pillow* ./flask_allows* ./FlaskBB*
 # clean up packages
 RUN rm -rf /app/wheel
 
+# symlink to themes directory
+RUN ln -s `python3 -c "import os, site;print(os.path.join(site.getsitepackages().pop(),'flaskbb/themes/'))"` /app/themes
 WORKDIR /app/flaskbb
 COPY wsgi.py .
 CMD gunicorn -w 1 -b 0.0.0.0:5000 wsgi:flaskbb --pid gunicorn.pid-
