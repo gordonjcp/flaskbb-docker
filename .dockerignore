@@ -1,4 +1,4 @@
 .git
-config/
-logs/
-themes/
+config/*
+logs/*
+themes/*
