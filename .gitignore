@@ -1,4 +1,2 @@
-
-logs/error.log
-logs/flaskbb.log
-logs/info.log
+logs/*
+themes/*
