@@ -20,8 +20,8 @@ services:
          - ./themes:/app/themes
          - ./config:/app/config:ro
          - ./logs:/app/logs
-      ports:
-         - 5000:5000
+      #ports:
+      #   - 5000:5000
 
    web:
       depends_on:
@@ -30,6 +30,8 @@ services:
       volumes: 
          - ./config/nginx:/etc/nginx-flaskbb:ro
       command: nginx -c /etc/nginx-flaskbb/nginx.conf
+      ports:
+         - 8080
 
 
    
