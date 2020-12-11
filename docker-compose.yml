@@ -17,11 +17,22 @@ services:
          - FLASKBB_SETTINGS=/app/config/flaskbb.cfg
       image: gordonjcp/flaskbb
       volumes:
-         - ./config:/app/config
          - ./themes:/app/themes
+         - ./config:/app/config:ro
          - ./logs:/app/logs
       ports:
          - 5000:5000
+
+   web:
+      depends_on:
+         - flaskbb
+      image: nginx:alpine
+      volumes: 
+         - ./config/nginx:/etc/nginx-flaskbb:ro
+      command: nginx -c /etc/nginx-flaskbb/nginx.conf
+
+
+   
 
 volumes:
    postgres-data:
