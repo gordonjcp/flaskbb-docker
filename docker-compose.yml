@@ -20,8 +20,10 @@ services:
          - ./themes:/app/themes
          - ./config:/app/config:ro
          - ./logs:/app/logs
+        # - ./config/flaskbb:/app/flaskbb
       #ports:
       #   - 5000:5000
+      #command: gunicorn app/config/wsgi:flaskbb -w1 -b0.0.0.0:5000 --log-file /app/logs/gunicorn.log --log-level debug --access-logfile -
 
    web:
       depends_on:
@@ -31,9 +33,7 @@ services:
          - ./config/nginx:/etc/nginx-flaskbb:ro
       command: nginx -c /etc/nginx-flaskbb/nginx.conf
       ports:
-         - 8080
-
-
+         - 80:80
    
 
 volumes:
