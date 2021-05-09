@@ -8,13 +8,13 @@ RUN apk update && apk -U add gcc g++ git py3-pip py3-wheel jpeg-dev musl-dev pyt
 WORKDIR /app/wheel
 RUN python3 -m pip wheel --no-deps -w /app/wheel flask-allows@git+https://github.com/gordonjcp/flask-allows.git@f/Cut-down-on-warnings#egg=flask-allows
 RUN python3 -m pip wheel --no-deps -w /app/wheel Pillow
-RUN python3 -m pip wheel --no-deps -w /app/wheel greenlet
+#RUN python3 -m pip wheel --no-deps -w /app/wheel greenlet
 
 WORKDIR /app
+COPY ./flaskbb /app/flaskbb
 # rebuild if there's a new git version
-ADD https://api.github.com/repos/gordonjcp/flaskbb/git/refs/heads/master version.json
-RUN git clone https://github.com/gordonjcp/flaskbb.git
-
+#ADD https://api.github.com/repos/gordonjcp/flaskbb/git/refs/heads/master version.json
+#RUN git clone https://github.com/gordonjcp/flaskbb.git
 
 # build the flaskbb package
 WORKDIR /app/flaskbb
@@ -29,7 +29,7 @@ WORKDIR /app/wheel
 COPY --from=builder /app/wheel/*whl /app/wheel/
 
 # install
-RUN python3 -m pip install ./greenlet* ./Pillow* ./flask_allows* ./FlaskBB* 
+RUN python3 -m pip install ./Pillow* ./flask_allows* ./FlaskBB* 
 #RUN python3 -m pip install ./FlaskBB*
 
 # clean up packages
