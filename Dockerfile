@@ -1,18 +1,20 @@
 # build flaskbb from github
-
 FROM alpine as builder
 
 # basics for building the required Python packages
-RUN apk update && apk -U add gcc git py3-pip py3-wheel jpeg-dev musl-dev python3-dev zlib-dev
+RUN apk update && apk -U add gcc g++ git py3-pip py3-wheel jpeg-dev musl-dev python3-dev zlib-dev
+
+# build custom flask-allows and Pillow
+WORKDIR /app/wheel
+RUN python3 -m pip wheel --no-deps -w /app/wheel flask-allows@git+https://github.com/gordonjcp/flask-allows.git@f/Cut-down-on-warnings#egg=flask-allows
+RUN python3 -m pip wheel --no-deps -w /app/wheel Pillow
+RUN python3 -m pip wheel --no-deps -w /app/wheel greenlet
+
 WORKDIR /app
 # rebuild if there's a new git version
 ADD https://api.github.com/repos/gordonjcp/flaskbb/git/refs/heads/master version.json
 RUN git clone https://github.com/gordonjcp/flaskbb.git
 
-WORKDIR /app/wheel
-# build custom flask-allows and Pillow
-RUN python3 -m pip wheel --no-deps -w /app/wheel flask-allows@git+https://github.com/gordonjcp/flask-allows.git@f/Cut-down-on-warnings#egg=flask-allows
-RUN python3 -m pip wheel --no-deps -w /app/wheel Pillow
 
 # build the flaskbb package
 WORKDIR /app/flaskbb
@@ -27,14 +29,17 @@ WORKDIR /app/wheel
 COPY --from=builder /app/wheel/*whl /app/wheel/
 
 # install
-RUN python3 -m pip install ./Pillow* ./flask_allows* ./FlaskBB*
+RUN python3 -m pip install ./greenlet* ./Pillow* ./flask_allows* ./FlaskBB* 
+#RUN python3 -m pip install ./FlaskBB*
 
 # clean up packages
 RUN rm -rf /app/wheel
 
-# symlink to themes directory
-RUN ln -s `python3 -c "import os, site;print(os.path.join(site.getsitepackages().pop(),'flaskbb/themes/'))"` /app/themes
+# basic config
+COPY config/flaskbb.cfg /app/config/
+RUN mkdir /app/logs
+ENV FLASKBB_SETTINGS=/app/config/flaskbb.cfg
 WORKDIR /app/flaskbb
 COPY wsgi.py .
-CMD gunicorn -w 1 -b 0.0.0.0:5000 wsgi:flaskbb --pid gunicorn.pid-
+CMD gunicorn -w 1 -b 0.0.0.0:5000 wsgi:flaskbb --pid gunicorn.pid
 

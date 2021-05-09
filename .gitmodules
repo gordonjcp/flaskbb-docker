@@ -1,0 +1,3 @@
+[submodule "flaskbb"]
+	path = flaskbb
+	url = https://github.com/gordonjcp/flaskbb.git
