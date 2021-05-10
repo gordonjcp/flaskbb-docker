@@ -36,7 +36,7 @@ RUN python3 -m pip install ./Pillow* ./flask_allows* ./FlaskBB*
 RUN rm -rf /app/wheel
 
 # basic config
-COPY config/flaskbb.cfg /app/config/
+COPY ./flaskbb.cfg /app/config/
 RUN mkdir /app/logs
 ENV FLASKBB_SETTINGS=/app/config/flaskbb.cfg
 WORKDIR /app/flaskbb

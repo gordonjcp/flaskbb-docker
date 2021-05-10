@@ -11,6 +11,9 @@ services:
          - postgres-data:/var/lib/postgresql
 
    flaskbb:
+      build:
+         context: build/flaskbb/
+         dockerfile: Dockerfile.flaskbb
       depends_on: 
          - postgres
       environment:
@@ -18,12 +21,9 @@ services:
       image: gordonjcp/flaskbb
       volumes:
          - ./themes:/app/themes
-         - ./config:/app/config:ro
+         - ./config:/app/config
          - ./logs:/app/logs
-        # - ./config/flaskbb:/app/flaskbb
-      #ports:
-      #   - 5000:5000
-      #command: gunicorn app/config/wsgi:flaskbb -w1 -b0.0.0.0:5000 --log-file /app/logs/gunicorn.log --log-level debug --access-logfile -
+      command: gunicorn wsgi:flaskbb -w1 -b0.0.0.0:5000 --log-file /app/logs/gunicorn.log --log-level debug --access-logfile -
 
    web:
       depends_on:
@@ -31,6 +31,9 @@ services:
       image: nginx:alpine
       volumes: 
          - ./config/nginx:/etc/nginx-flaskbb:ro
+         - ./build/flaskbb/flaskbb/flaskbb/static:/srv/static:ro
+         - ./build/flaskbb/flaskbb/flaskbb/themes:/srv/aurora:ro
+
       command: nginx -c /etc/nginx-flaskbb/nginx.conf
       ports:
          - 80:80
