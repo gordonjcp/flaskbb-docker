@@ -11,7 +11,7 @@ RUN python3 -m pip wheel --no-deps -w /app/wheel Pillow
 #RUN python3 -m pip wheel --no-deps -w /app/wheel greenlet
 
 WORKDIR /app
-COPY ./flaskbb /app/flaskbb
+COPY ./flaskbb/flaskbb /app/flaskbb
 # rebuild if there's a new git version
 #ADD https://api.github.com/repos/gordonjcp/flaskbb/git/refs/heads/master version.json
 #RUN git clone https://github.com/gordonjcp/flaskbb.git
@@ -36,10 +36,10 @@ RUN python3 -m pip install ./Pillow* ./flask_allows* ./FlaskBB*
 RUN rm -rf /app/wheel
 
 # basic config
-COPY ./flaskbb.cfg /app/config/
+COPY ./flaskbb/flaskbb.cfg /app/config/
 RUN mkdir /app/logs
 ENV FLASKBB_SETTINGS=/app/config/flaskbb.cfg
 WORKDIR /app/flaskbb
-COPY wsgi.py .
+COPY ./flaskbb/wsgi.py .
 CMD gunicorn -w 1 -b 0.0.0.0:5000 wsgi:flaskbb --pid gunicorn.pid
 

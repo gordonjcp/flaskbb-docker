@@ -12,8 +12,8 @@ services:
 
    flaskbb:
       build:
-         context: build/flaskbb/
-         dockerfile: Dockerfile
+         context: build/
+         dockerfile: flaskbb/Dockerfile
       depends_on: 
          - postgres
          - redis
@@ -21,21 +21,18 @@ services:
          - FLASKBB_SETTINGS=/app/config/flaskbb.cfg
       image: gordonjcp/flaskbb
       volumes:
-         - ./themes:/app/themes
+         #- ./themes:/app/themes
          - ./config:/app/config
          - ./logs:/app/logs
       command: gunicorn wsgi:flaskbb -w1 -b0.0.0.0:5000 --log-file /app/logs/gunicorn.log --log-level debug --access-logfile -
 
    web:
+      build:
+         context: build/
+         dockerfile: nginx/Dockerfile
       depends_on:
          - flaskbb
-      image: nginx:alpine
-      volumes: 
-         - ./config/nginx:/etc/nginx-flaskbb:ro
-         - ./build/flaskbb/flaskbb/flaskbb/static:/srv/static:ro
-         - ./build/flaskbb/flaskbb/flaskbb/themes:/srv/aurora:ro
-
-      command: nginx -c /etc/nginx-flaskbb/nginx.conf
+      image: gordonjcp/flaskbb-nginx
       ports:
          - 80:80
    
