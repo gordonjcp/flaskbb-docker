@@ -13,9 +13,10 @@ services:
    flaskbb:
       build:
          context: build/flaskbb/
-         dockerfile: Dockerfile.flaskbb
+         dockerfile: Dockerfile
       depends_on: 
          - postgres
+         - redis
       environment:
          - FLASKBB_SETTINGS=/app/config/flaskbb.cfg
       image: gordonjcp/flaskbb
