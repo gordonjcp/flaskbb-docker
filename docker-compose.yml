@@ -11,9 +11,9 @@ services:
          - postgres-data:/var/lib/postgresql
 
    flaskbb:
-      build:
-         context: build/
-         dockerfile: flaskbb/Dockerfile
+      #build:
+      #   context: build/
+      #   dockerfile: flaskbb/Dockerfile
       depends_on: 
          - postgres
          - redis
@@ -27,9 +27,9 @@ services:
       command: gunicorn wsgi:flaskbb -w1 -b0.0.0.0:5000 --log-file /app/logs/gunicorn.log --log-level debug --access-logfile -
 
    web:
-      build:
-         context: build/
-         dockerfile: nginx/Dockerfile
+      #build:
+      #   context: build/
+      #   dockerfile: nginx/Dockerfile
       depends_on:
          - flaskbb
       image: gordonjcp/flaskbb-nginx
