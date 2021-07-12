@@ -6,14 +6,11 @@ services:
    postgres:
       image: postgres:9.5-alpine
       environment:
-         - POSTGRES_PASSWORD=asdfasdf
+         - POSTGRES_PASSWORD=asdfasdf # change this
       volumes:
          - postgres-data:/var/lib/postgresql
 
    flaskbb:
-      #build:
-      #   context: build/
-      #   dockerfile: flaskbb/Dockerfile
       depends_on: 
          - postgres
          - redis
@@ -21,21 +18,20 @@ services:
          - FLASKBB_SETTINGS=/app/config/flaskbb.cfg
       image: gordonjcp/flaskbb
       volumes:
-         #- ./themes:/app/themes
-         - ./config:/app/config
+         - ./themes:/app/themes
+         - ./config/flaskbb:/app/config
          - ./logs:/app/logs
-      command: gunicorn wsgi:flaskbb -w1 -b0.0.0.0:5000 --log-file /app/logs/gunicorn.log --log-level debug --access-logfile -
+      command: gunicorn wsgi:flaskbb -w1 -b0.0.0.0:5000 --access-logfile -
 
    web:
-      #build:
-      #   context: build/
-      #   dockerfile: nginx/Dockerfile
       depends_on:
          - flaskbb
-      image: gordonjcp/flaskbb-nginx
-      ports:
-         - 80:80
-   
+      volumes:
+         - ./web/:/srv/nginx/webroot
+         - ./themes:/srv/nginx/themes
+         - ./config/nginx:/etc/nginx-flaskbb
+      image: nginx:alpine
+      command: nginx -c /etc/nginx-flaskbb/nginx.conf
 
 volumes:
    postgres-data:
