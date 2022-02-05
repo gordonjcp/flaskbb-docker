@@ -1,3 +1,4 @@
-[submodule "flaskbb"]
+[submodule "build/flaskbb/flaskbb"]
 	path = build/flaskbb/flaskbb
-	url = git@github.com:gordonjcp/flaskbb.git
+	url = https://github.com/flaskbb/flaskbb.git
+	branch = master
