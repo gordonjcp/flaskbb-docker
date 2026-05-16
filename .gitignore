@@ -1,3 +1,2 @@
 docker-compose.override.yml
 logs/*.log
-config/flaskbb.cfg

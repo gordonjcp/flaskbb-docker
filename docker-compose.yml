@@ -1,17 +1,16 @@
 services:
    redis:
       image: docker.io/valkey/valkey:9-alpine
-      #command: valkey-server /etc/valkey.conf
-
 
    postgres:
       image: docker.io/postgres:18-alpine
-      #environment:
-         #- POSTGRES_PASSWORD=asdfasdf # change this
+      environment:
+         - POSTGRES_PASSWORD=asdfasdf # change this
       volumes:
          - postgres-data:/var/lib/postgresql
 
    flaskbb: &flaskbb
+      image: flaskbb
       build:
          context: ./build/
       user: uwsgi:uwsgi
@@ -20,17 +19,18 @@ services:
          - redis
       volumes:
          # FIXME
-         - ./config/flaskbb.cfg:/app/flaskbb/flaskbb.cfg
          - ./config/uwsgi.ini:/app/flaskbb/uwsgi.ini
          - ./logs:/app/flaskbb/logs
-
-      image: flaskbb
+         - ./storage:/app/flaskbb/storage
+         #- ./storage/translations:/app/flaskbb/flaskbb/translations
 
       command: uwsgi --ini /app/flaskbb/uwsgi.ini
 
    celery:
       <<: *flaskbb
+      user: uwsgi:uwsgi
       command: flaskbb celery worker
 
 volumes:
    postgres-data:
+

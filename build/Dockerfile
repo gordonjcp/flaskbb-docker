@@ -1,10 +1,5 @@
 # build flaskbb from github
 FROM alpine 
-#as builder
-
-
-# make pip3 uv
-
 
 # basics for building the required Python packages
 RUN apk update && apk -U add make py3-pip py3-psycopg2 uwsgi uwsgi-http uwsgi-python3
@@ -18,10 +13,16 @@ RUN rm /usr/lib/python*/EXTERNALLY-MANAGED
 WORKDIR /app/flaskbb
 RUN pip3 install -r requirements.txt
 
-RUN mkdir /app/flaskbb/instance
-RUN chown -R uwsgi:uwsgi /app/flaskbb/instance
-RUN mkdir /app/flaskbb/whoosh_index
-RUN chown -R uwsgi:uwsgi /app/flaskbb/whoosh_index
+COPY ./config/flaskbb.cfg /app/flaskbb/flaskbb.cfg
+COPY ./config/wsgi.py /app/flaskbb/wsgi.py
+
+#RUN mkdir /app/flaskbb/instance
+#RUN chown -R uwsgi:uwsgi /app/flaskbb/instance
+#RUN mkdir /app/flaskbb/whoosh_index
+#RUN chown -R uwsgi:uwsgi /app/flaskbb/whoosh_index
+##RUN mkdir /app/flaskbb/flaskbb/translations
+RUN chown -R uwsgi:uwsgi /app/flaskbb/flaskbb/translations
+
 
 CMD ["flaskbb",  "run",  "--host 0.0.0.0"]
 
